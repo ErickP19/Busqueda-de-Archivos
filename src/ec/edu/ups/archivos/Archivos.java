@@ -73,6 +73,8 @@ public class Archivos extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -173,6 +175,22 @@ public class Archivos extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem2);
+
+        jMenuItem3.setText("Crear Carpeta");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
+        jMenuItem4.setText("Eliminar");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
 
         jMenuBar1.add(jMenu1);
 
@@ -387,6 +405,153 @@ public class Archivos extends javax.swing.JFrame {
             archivo.renameTo(archivoNuevo);
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+    public void vaciarLista() {
+
+        DefaultListModel lisDir = (DefaultListModel) listacarpetas.getModel();
+        lisDir.removeAllElements();
+
+        DefaultListModel lisArc = (DefaultListModel) listaarchivos.getModel();
+        lisArc.removeAllElements();
+
+        DefaultListModel lisOcu = (DefaultListModel) listaocultos.getModel();
+        lisOcu.removeAllElements();
+
+    }
+    
+    
+    
+    public void actualizar(){
+        vaciarLista();
+
+        File ruta;
+        ruta = new File(txtruta.getText().trim());
+        File[] archivos = ruta.listFiles();
+
+        for (File archivo : archivos) {
+
+            if (archivo.isDirectory()) {
+                if (archivo.isHidden()) {
+                    System.out.println("Ocultos " + archivo.getName());
+                    String lista = archivo.getName();
+                    ocultos.addElement(lista);
+
+                } else {
+                    System.out.println("Directorios " + archivo.getName());
+                    String lista = archivo.getName();
+                    carpetas.addElement(lista);
+                }
+
+            } else if (archivo.isFile()) {
+                if (archivo.isHidden()) {
+                    System.out.println("Ocultos " + archivo.getName());
+                    String lista = archivo.getName();
+                    ocultos.addElement(lista);
+
+                } else {
+                    System.out.println("Archivos " + archivo.getName());
+                    String lista = archivo.getName();
+                    archiv.addElement(lista);
+                }
+
+            }
+        }
+    }
+    
+    
+    
+    
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+         String carpetaSelec = null;
+
+        if (!listacarpetas.isSelectionEmpty()) {
+
+            carpetaSelec = (String) listacarpetas.getSelectedValue();
+
+            String nombreCar = JOptionPane.showInputDialog("Ingrese el nombre de la Carpeta");
+            String ruta = txtruta.getText().trim() + "\\" + carpetaSelec + "\\" + nombreCar;
+            System.out.println("Nombre de la carpeta " + carpetaSelec + " Ruta Archivo " + ruta);
+
+            File carpetaNew = new File(ruta);
+
+            if (!carpetaNew.exists()) {
+
+                carpetaNew.mkdir();
+                JOptionPane.showMessageDialog(this, "Carpeta Creada");
+
+            }
+
+        } else if (!listaocultos.isSelectionEmpty()) {
+
+            carpetaSelec = (String) listaocultos.getSelectedValue();
+
+            String nombreCar = JOptionPane.showInputDialog("Ingrese el nombre de la Carpeta");
+            String ruta = txtruta.getText().trim() + "\\" + carpetaSelec + "\\" + nombreCar;
+            System.out.println("Nombre de la carpeta " + carpetaSelec + " Ruta Archivo " + ruta);
+
+            File carpetaNew = new File(ruta);
+
+            if (!carpetaNew.exists()) {
+
+                carpetaNew.mkdir();
+                JOptionPane.showMessageDialog(this, "Carpeta Creada");
+
+            }
+
+        } else {
+
+            String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la Carpeta");
+            String ruta = txtruta.getText().trim() + "\\" + nombre;
+
+            File carpetaNew = new File(ruta);
+
+            if (!carpetaNew.exists()) {
+
+                carpetaNew.mkdir();
+                JOptionPane.showMessageDialog(this, "Carpeta Creada");
+
+            }
+        }
+
+        actualizar();
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        String achivoSelec = null;
+        boolean isValid = true;
+
+        if (!listaarchivos.isSelectionEmpty()) {
+
+            achivoSelec = (String) listaarchivos.getSelectedValue();
+
+        } else if (!listacarpetas.isSelectionEmpty()) {
+
+            achivoSelec = (String) listacarpetas.getSelectedValue();
+
+        } else if (!listaocultos.isSelectionEmpty()) {
+
+            achivoSelec = (String) listaocultos.getSelectedValue();
+
+        } else {
+            isValid = false;
+            //JOptionPane.showMessageDialog(this, "no hay ningun elemento seleccionado");
+        }
+
+        if (isValid = true) {
+            JOptionPane.showConfirmDialog(this, "Desea Eliminar");
+            String rutaArcSelec = txtruta.getText().trim() + "\\" + achivoSelec;
+
+            File archivo = new File(rutaArcSelec);
+
+            archivo.delete();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo elimionar \n No hay ningun elemento seleccionado");
+        }
+
+        actualizar();
+        
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -434,6 +599,8 @@ public class Archivos extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
